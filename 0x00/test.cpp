@@ -45,12 +45,24 @@ int func2(int arr[], int N)
 
 int func3(int N)
 {
-    return -1;
+    // O(√N)
+    for (int i = 1; i * i <= N; i++)
+    {
+        if (i * i == N)
+            return 1;
+    }
+    return 0;
 }
 
 int func4(int N)
 {
-    return -1;
+    // O(logN)
+    int answer = 1;
+    while (2 * answer <= N)
+    {
+        answer *= 2;
+    }
+    return answer;
 }
 
 void test1()

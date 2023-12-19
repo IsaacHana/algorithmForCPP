@@ -3,10 +3,21 @@ using namespace std;
 
 void insert(int idx, int num, int arr[], int &len)
 {
+    for (int i = len; i > idx; i--)
+    {
+        arr[i] = arr[i - 1];
+    }
+    arr[idx] = num;
+    len++;
 }
 
 void erase(int idx, int arr[], int &len)
 {
+    len--;
+    for (int i = idx; i < len; i++)
+    {
+        arr[idx] = arr[idx + 1];
+    }
 }
 
 void printArr(int arr[], int &len)

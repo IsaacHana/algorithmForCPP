@@ -10,27 +10,24 @@ int main()
     cin >> N;
     stack<pair<int, int>> S;
     long long ans = 0;
-    cout << "result"
-         << "\n";
-    for (int i = 0; i < N; i++)
+    while (N--)
     {
-        int h;
+        int h, cnt = 1;
         cin >> h;
-        int cnt = 1;
-        //
         while (!S.empty() && S.top().first <= h)
         {
             ans += S.top().second;
             if (S.top().first == h)
-                cnt += S.top().second; // ?
+            {
+                cnt += S.top().second;
+            }
             S.pop();
         }
-        //
         if (!S.empty())
+        {
             ans++;
+        }
         S.push({h, cnt});
-        cout << ans << "\n";
     }
-
-    // cout << ans;
+    cout << ans;
 }

@@ -16,11 +16,14 @@ int main()
     {
         long long h;
         cin >> h;
+
         while (!S.empty() && S.top() <= h)
         {
             S.pop();
         }
+
         ans += S.size();
+
         S.push(h);
     }
 

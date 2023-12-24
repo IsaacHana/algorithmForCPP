@@ -8,11 +8,10 @@ int main()
 
     int n;
     cin >> n;
-
     stack<int> S;
-    queue<char> Q;
-    int cnt = 1;
+    queue<string> Q;
 
+    int cnt = 1;
     while (n--)
     {
         int val;
@@ -20,16 +19,17 @@ int main()
 
         while (cnt <= val)
         {
+            Q.push("+");
             S.push(cnt++);
-            Q.push('+');
         }
         if (S.top() != val)
         {
             cout << "NO";
             return 0;
         }
+
+        Q.push("-");
         S.pop();
-        Q.push('-');
     }
 
     while (!Q.empty())

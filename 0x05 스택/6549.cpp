@@ -15,10 +15,12 @@ int main()
 
         stack<pair<long long, long long>> S;
         long long ans = 0;
+
         for (int i = 0; i < n; i++)
         {
-            int h, idx = i;
+            int h;
             cin >> h;
+            int idx = i;
             while (!S.empty() && S.top().second >= h)
             {
                 int w = i - S.top().first;
@@ -28,6 +30,7 @@ int main()
             }
             S.push({idx, h});
         }
+
         while (!S.empty())
         {
             int w = n - S.top().first;
@@ -35,6 +38,6 @@ int main()
             S.pop();
         }
 
-        cout << ans << "\n";
+        cout << ans << '\n';
     }
 }

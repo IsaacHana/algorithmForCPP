@@ -6,29 +6,26 @@ int main()
     ios::sync_with_stdio(0);
     cin.tie(0);
 
-    int n;
-    cin >> n;
     stack<int> S;
-    queue<string> Q;
-
-    int cnt = 1;
+    queue<char> Q;
+    int n, cur = 1;
+    cin >> n;
     while (n--)
     {
         int val;
         cin >> val;
 
-        while (cnt <= val)
+        while (cur <= val)
         {
-            Q.push("+");
-            S.push(cnt++);
+            Q.push('+');
+            S.push(cur++);
         }
         if (S.top() != val)
         {
             cout << "NO";
             return 0;
         }
-
-        Q.push("-");
+        Q.push('-');
         S.pop();
     }
 

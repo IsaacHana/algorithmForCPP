@@ -8,33 +8,30 @@ int main()
 
     while (true)
     {
-        int N;
-        cin >> N;
-        if (N == 0)
-        {
+        int n;
+        cin >> n;
+        if (n == 0)
             break;
-        }
+
         stack<pair<long long, long long>> S;
         long long ans = 0;
-
-        for (int i = 0; i < N; i++)
+        for (int i = 0; i < n; i++)
         {
-            int h;
+            int h, idx = i;
             cin >> h;
-            int idx = i;
-            while (!S.empty() && S.top().first >= h)
+            while (!S.empty() && S.top().second >= h)
             {
-                int w = i - S.top().second;
-                ans = max(ans, w * S.top().first);
-                idx = S.top().second;
+                int w = i - S.top().first;
+                ans = max(ans, w * S.top().second);
+                idx = S.top().first;
                 S.pop();
             }
-            S.push({h, idx});
+            S.push({idx, h});
         }
-
         while (!S.empty())
         {
-            ans = max(ans, (N - S.top().second) * S.top().first);
+            int w = n - S.top().first;
+            ans = max(ans, w * S.top().second);
             S.pop();
         }
 

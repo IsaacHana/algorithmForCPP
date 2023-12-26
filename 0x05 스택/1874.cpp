@@ -8,17 +8,18 @@ int main()
 
     stack<int> S;
     queue<char> Q;
-    int n, cur = 1;
+    int n, i = 1;
     cin >> n;
+
     while (n--)
     {
         int val;
         cin >> val;
 
-        while (cur <= val)
+        while (i <= val)
         {
             Q.push('+');
-            S.push(cur++);
+            S.push(i++);
         }
         if (S.top() != val)
         {

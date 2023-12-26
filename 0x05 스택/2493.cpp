@@ -7,22 +7,19 @@ int main()
     cin.tie(0);
 
     stack<pair<int, int>> S;
+    S.push({1000000001, 0});
     int N;
     cin >> N;
-    S.push({0, 100000001});
     for (int i = 1; i <= N; i++)
     {
-        int val;
-        cin >> val;
-        while (!S.empty() && S.top().second <= val)
+        int h;
+        cin >> h;
+
+        while (S.top().first <= h)
         {
             S.pop();
         }
-        if (!S.empty())
-        {
-            cout << S.top().first << " ";
-        }
-
-        S.push({i, val});
+        cout << S.top().second << " ";
+        S.push({h, i});
     }
 }

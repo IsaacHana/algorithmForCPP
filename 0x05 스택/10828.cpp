@@ -7,14 +7,13 @@ int main()
     cin.tie(0);
 
     stack<int> S;
-
     int N;
     cin >> N;
+
     while (N--)
     {
         string cmd;
         cin >> cmd;
-
         if (cmd == "push")
         {
             int val;
@@ -36,9 +35,13 @@ int main()
         else if (cmd == "top")
         {
             if (!S.empty())
+            {
                 cout << S.top() << "\n";
+            }
             else
+            {
                 cout << -1 << "\n";
+            }
         }
         else if (cmd == "size")
         {

@@ -9,17 +9,18 @@ int main()
     stack<int> S;
     int K, ans = 0;
     cin >> K;
+
     while (K--)
     {
         int val;
         cin >> val;
-        if (val == 0)
+        if (val != 0)
         {
-            S.pop();
+            S.push(val);
         }
         else
         {
-            S.push(val);
+            S.pop();
         }
     }
 

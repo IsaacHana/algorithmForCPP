@@ -6,32 +6,28 @@ int main()
     ios::sync_with_stdio(0);
     cin.tie(0);
 
-    int K;
-    cin >> K;
-
     stack<int> S;
-
+    int K, ans = 0;
+    cin >> K;
     while (K--)
     {
         int val;
         cin >> val;
-        if (val)
-        {
-            S.push(val);
-        }
-        else
+        if (val == 0)
         {
             S.pop();
         }
+        else
+        {
+            S.push(val);
+        }
     }
-
-    int total = 0;
 
     while (!S.empty())
     {
-        total += S.top();
+        ans += S.top();
         S.pop();
     }
 
-    cout << total;
+    cout << ans;
 }

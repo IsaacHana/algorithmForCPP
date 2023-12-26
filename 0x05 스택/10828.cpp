@@ -6,10 +6,10 @@ int main()
     ios::sync_with_stdio(0);
     cin.tie(0);
 
-    int N;
     stack<int> S;
-    cin >> N;
 
+    int N;
+    cin >> N;
     while (N--)
     {
         string cmd;
@@ -36,13 +36,9 @@ int main()
         else if (cmd == "top")
         {
             if (!S.empty())
-            {
                 cout << S.top() << "\n";
-            }
             else
-            {
                 cout << -1 << "\n";
-            }
         }
         else if (cmd == "size")
         {
@@ -50,10 +46,7 @@ int main()
         }
         else if (cmd == "empty")
         {
-            if (S.empty())
-                cout << 1 << "\n";
-            else
-                cout << 0 << "\n";
+            cout << S.empty() << "\n";
         }
     }
 }

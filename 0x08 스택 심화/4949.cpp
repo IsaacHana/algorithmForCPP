@@ -6,14 +6,14 @@ int main() {
     cin.tie(0);
 
     while (true) {
-        string sentence;
-        getline(cin, sentence);
-        if (sentence == ".") break;
+        string s;
+        getline(cin, s);
+        if (s == ".") break;
 
         stack<char> S;
         bool isValid = true;
 
-        for (char c : sentence) {
+        for (char c : s) {
             if (c == '(' || c == '[') S.push(c);
             if (c == ')') {
                 if (S.empty() || S.top() != '(') {
@@ -33,10 +33,9 @@ int main() {
 
         if (!S.empty()) isValid = false;
 
-        if (isValid) {
+        if (isValid)
             cout << "yes\n";
-        } else {
+        else
             cout << "no\n";
-        }
     }
 }

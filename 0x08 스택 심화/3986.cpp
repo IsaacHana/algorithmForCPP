@@ -5,19 +5,24 @@ int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
 
+    long long ans = 0;
     int N;
     cin >> N;
-    int ans = 0;
     while (N--) {
         stack<char> S;
-        string str;
-        cin >> str;
+        string s;
+        cin >> s;
 
-        for (char c : str) {
-            if (!S.empty() && S.top() == c)
-                S.pop();
-            else
+        for (auto c : s) {
+            if (S.empty()) {
                 S.push(c);
+            } else {
+                if (S.top() != c) {
+                    S.push(c);
+                } else {
+                    S.pop();
+                }
+            }
         }
 
         if (S.empty()) {

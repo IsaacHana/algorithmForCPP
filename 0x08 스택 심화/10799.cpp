@@ -5,23 +5,23 @@ int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
 
-    stack<char> st;
     long long ans = 0;
+    stack<char> S;
     string s;
     cin >> s;
 
     for (int i = 0; i < s.length(); i++) {
         if (s[i] == '(') {
-            st.push(s[i]);
+            S.push(s[i]);
         } else {  // ')'
-            st.pop();
+            S.pop();
             if (s[i - 1] == '(') {  // lazer
-                ans += st.size();
-            } else {
+                ans += S.size();
+            } else {  // bar
                 ans++;
             }
         }
     }
 
-    cout << ans << "\n";
+    cout << ans;
 }

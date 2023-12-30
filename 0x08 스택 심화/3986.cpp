@@ -8,19 +8,22 @@ int main() {
     long long ans = 0;
     int N;
     cin >> N;
+
     while (N--) {
         stack<char> S;
-        string s;
-        cin >> s;
+        string str;
+        cin >> str;
 
-        for (auto c : s) {
+        if (str.length() % 2 != 0) continue;
+
+        for (auto c : str) {
             if (S.empty()) {
                 S.push(c);
             } else {
-                if (S.top() != c) {
-                    S.push(c);
-                } else {
+                if (S.top() == c) {
                     S.pop();
+                } else {
+                    S.push(c);
                 }
             }
         }

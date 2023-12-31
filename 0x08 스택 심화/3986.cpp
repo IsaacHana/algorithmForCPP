@@ -8,14 +8,10 @@ int main() {
     long long ans = 0;
     int N;
     cin >> N;
-
     while (N--) {
         stack<char> S;
         string str;
         cin >> str;
-
-        if (str.length() % 2 != 0) continue;
-
         for (auto c : str) {
             if (S.empty()) {
                 S.push(c);
@@ -28,9 +24,7 @@ int main() {
             }
         }
 
-        if (S.empty()) {
-            ans++;
-        }
+        if (S.empty()) ans++;
     }
 
     cout << ans;

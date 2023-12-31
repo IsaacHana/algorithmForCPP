@@ -8,14 +8,11 @@ int main() {
     stack<char> S;
     string str;
     cin >> str;
-
     long long ans = 0;
-    int num = 1;
-    bool isValid = true;
+    long long num = 1;
 
     for (int i = 0; i < str.length(); i++) {
         char c = str[i];
-
         if (c == '(') {
             S.push(c);
             num *= 2;
@@ -26,30 +23,25 @@ int main() {
             char prev = str[i - 1];
             if (c == ')') {
                 if (S.empty() || S.top() != '(') {
-                    isValid = false;
-                    break;
+                    cout << 0;
+                    return 0;
                 }
                 if (prev == '(') ans += num;
                 num /= 2;
-                S.pop();
             } else if (c == ']') {
                 if (S.empty() || S.top() != '[') {
-                    isValid = false;
-                    break;
+                    cout << 0;
+                    return 0;
                 }
                 if (prev == '[') ans += num;
                 num /= 3;
-                S.pop();
             }
+            S.pop();
         }
     }
 
-    if (!S.empty()) {
-        isValid = false;
-    }
-    if (isValid) {
+    if (S.empty())
         cout << ans;
-    } else {
+    else
         cout << 0;
-    }
 }

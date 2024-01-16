@@ -1,58 +1,50 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int storage[1002][1002];
-int dist[1002][1002];
+int dist[1001][1001];
 int dx[4] = {1, 0, -1, 0};
 int dy[4] = {0, 1, 0, -1};
-
 int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
 
-    int ans = 0;
-
+    int N, M, val, total = 0;
+    cin >> N >> M;
     queue<pair<int, int>> Q;
-    int M, N;
-    cin >> M >> N;
-    for (int i = 1; i <= N; i++) {
-        for (int j = 1; j <= M; j++) {
-            int val;
+    for (int i = 0; i < M; i++) {
+        for (int j = 0; j < N; j++) {
             cin >> val;
-
-            storage[i][j] = val;
-            if (val == 1) {
+            dist[i][j] = val;
+            if (val == -1)
+                continue;
+            else if (val == 1)
                 Q.push({i, j});
-            } else if (val == 0) {
-                dist[i][j] = -1;
-            }
+            total++;
         }
     }
-
+    int cnt = -1;
     while (!Q.empty()) {
-        auto cur = Q.front();
-        Q.pop();
-        for (int dir = 0; dir < 4; dir++) {
-            int nx = cur.first + dx[dir];
-            int ny = cur.second + dy[dir];
+        int qsize = Q.size();
+        for (int s = 0; s < qsize; s++) {
+            auto cur = Q.front();
+            Q.pop();
+            total--;
+            for (int dir = 0; dir < 4; dir++) {
+                int nx = cur.first + dx[dir];
+                int ny = cur.second + dy[dir];
 
-            if (nx <= 0 || nx > N || ny <= 0 || ny > M) continue;
-            if (dist[nx][ny] >= 0) continue;
+                if (nx < 0 || nx >= M || ny < 0 || ny >= N) continue;
+                if (dist[nx][ny]) continue;
 
-            dist[nx][ny] = dist[cur.first][cur.second] + 1;
-            Q.push({nx, ny});
-        }
-    }
-
-    for (int i = 1; i <= N; i++) {
-        for (int j = 1; j <= M; j++) {
-            if (dist[i][j] == -1) {
-                cout << -1;
-                return 0;
+                dist[nx][ny] = 1;
+                Q.push({nx, ny});
             }
-            ans = max(ans, dist[i][j]);
         }
+        cnt++;
     }
 
-    cout << ans;
+    if (total)
+        cout << -1 << '\n';
+    else
+        cout << cnt << '\n';
 }

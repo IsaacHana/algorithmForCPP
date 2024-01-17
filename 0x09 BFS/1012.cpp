@@ -1,5 +1,8 @@
 #include <bits/stdc++.h>
 using namespace std;
+
+bool vis[51][51];
+
 int dx[4] = {1, 0, -1, 0};
 int dy[4] = {0, 1, 0, -1};
 
@@ -7,45 +10,50 @@ int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
 
-    int T;
+    int T, N, M, K;
     cin >> T;
-
     while (T--) {
-        int N, M, K;
         cin >> M >> N >> K;
-        int dist[N][M] = {};
-        int ans = 0;
-
-        while (K--) {
-            int X, Y;
-            cin >> X >> Y;
-            dist[Y][X] = 1;
-        }
+        int cnt = 0;
 
         for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                if (dist[i][j] == 0) continue;
-                ans++;
+            fill(vis[i], vis[i] + M, true);
+        }
 
-                queue<pair<int, int>> Q;
-                Q.push({i, j});
-                dist[i][j] = 1;
-                while (!Q.empty()) {
-                    auto cur = Q.front();
-                    Q.pop();
+        queue<pair<int, int>> Q;
+        int X, Y;
+        while (K--) {
+            cin >> Y >> X;
+            vis[X][Y] = false;
+            Q.push({X, Y});
+        }
 
-                    for (int dir = 0; dir < 4; dir++) {
-                        int nx = cur.first + dx[dir];
-                        int ny = cur.second + dy[dir];
+        while (!Q.empty()) {
+            auto cur = Q.front();
+            Q.pop();
+            if (vis[cur.first][cur.second]) continue;
+            vis[cur.first][cur.second] = true;
+            cnt++;
 
-                        if (nx < 0 || nx >= N || ny < 0 || ny >= M || dist[nx][ny] == 0) continue;
-                        dist[nx][ny] = 0;
-                        Q.push({nx, ny});
-                    }
+            queue<pair<int, int>> Q2;
+            Q2.push({cur.first, cur.second});
+            while (!Q2.empty()) {
+                auto cur2 = Q2.front();
+                Q2.pop();
+
+                for (int dir = 0; dir < 4; dir++) {
+                    int nx = cur2.first + dx[dir];
+                    int ny = cur2.second + dy[dir];
+
+                    if (nx < 0 || nx >= N || ny < 0 || ny >= M) continue;
+                    if (vis[nx][ny]) continue;
+
+                    vis[nx][ny] = true;
+                    Q2.push({nx, ny});
                 }
             }
         }
 
-        cout << ans << '\n';
+        cout << cnt << '\n';
     }
 }

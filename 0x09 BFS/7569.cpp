@@ -1,68 +1,62 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int dist[101][101][101];
-queue<tuple<int, int, int>> Q;
-int dx[6] = {1, 0, 0, -1, 0, 0};
-int dy[6] = {0, 1, 0, 0, -1, 0};
-int dz[6] = {0, 0, 1, 0, 0, -1};
+int board[101][101][101];
 
+int dz[6] = {1, 0, 0, -1, 0, 0};
+int dx[6] = {0, 1, 0, 0, -1, 0};
+int dy[6] = {0, 0, 1, 0, 0, -1};
 int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
-
+    int ans = 0;
     int N, M, H;
-
     cin >> M >> N >> H;
 
-    for (int k = 0; k < H; k++) {
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                int val;
+    int total = H * M * N;
+
+    queue<tuple<int, int, int>> Q;
+    int val;
+    for (int i = 0; i < H; i++) {
+        for (int j = 0; j < N; j++) {
+            for (int k = 0; k < M; k++) {
                 cin >> val;
+                board[i][j][k] = val;
+
                 if (val == 1) {
-                    Q.push({k, i, j});
+                    Q.push({i, j, k});
+                    total--;
                 }
-                if (val == 0) {
-                    dist[k][i][j] = -1;
+                if (val == -1) {
+                    total--;
                 }
             }
         }
     }
 
     while (!Q.empty()) {
-        auto cur = Q.front();
+        int z, x, y;
+        tie(z, x, y) = Q.front();
         Q.pop();
 
-        int curX, curY, curZ;
-        tie(curZ, curX, curY) = cur;
         for (int dir = 0; dir < 6; dir++) {
-            int nx = curX + dx[dir];
-            int ny = curY + dy[dir];
-            int nz = curZ + dz[dir];
-            if (nx < 0 || nx >= N || ny < 0 || ny >= M || nz < 0 || nz >= H) continue;
-            if (dist[nz][nx][ny] >= 0) continue;
-            dist[nz][nx][ny] = dist[curZ][curX][curY] + 1;
-            Q.push({nz, nx, ny});
-        }
-    }
+            int nx = x + dx[dir];
+            int ny = y + dy[dir];
+            int nz = z + dz[dir];
 
-    int ans = 0;
-
-    for (int k = 0; k < H; k++) {
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                // cout << dist[k][i][j] << " ";
-                if (dist[k][i][j] == -1) {
-                    cout << -1;
-                    return 0;
-                }
-                ans = max(ans, dist[k][i][j]);
+            if (nz < 0 || nz >= H || nx < 0 || nx >= N || ny < 0 || ny >= M) continue;
+            if (board[nz][nx][ny] == 0) {
+                total--;
+                board[nz][nx][ny] = board[z][x][y] + 1;
+                ans = max(ans, board[nz][nx][ny] - 1);
+                Q.push({nz, nx, ny});
             }
-            // cout << '\n';
         }
-        // cout << '\n';
     }
 
-    cout << ans;
+    if (total) {
+        cout << -1;
+    } else {
+        cout << ans;
+    }
 }

@@ -1,5 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
+
+int board[101][101];
+bool vis[101][101];
+
 int dx[4] = {1, 0, -1, 0};
 int dy[4] = {0, 1, 0, -1};
 
@@ -7,40 +11,34 @@ int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
 
-    int N;
+    int N, mx = 1;
     cin >> N;
-    int board[N][N];
-    int mx_cnt = 0;
-    int mx_h = 0;
+
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
-            int val;
-            cin >> val;
-            mx_h = max(mx_h, val);
-            board[i][j] = val;
+            cin >> board[i][j];
+            mx = max(mx, board[i][j]);
         }
     }
-
-    int dist[N][N];
-
-    while (mx_h--) {
+    int mx_cnt = 0;
+    while (mx--) {
         for (int i = 0; i < N; i++) {
-            fill(dist[i], dist[i] + N, -1);
+            fill(vis[i], vis[i] + N, false);
+        }
+        for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                if (mx_h >= board[i][j]) {
-                    dist[i][j] = 0;
-                }
+                if (mx >= board[i][j]) vis[i][j] = true;
             }
         }
         int cnt = 0;
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                if (dist[i][j] == 0) continue;
+                if (vis[i][j]) continue;
                 cnt++;
 
                 queue<pair<int, int>> Q;
                 Q.push({i, j});
-                dist[i][j] = 0;
+                vis[i][j] = true;
 
                 while (!Q.empty()) {
                     auto cur = Q.front();
@@ -51,9 +49,9 @@ int main() {
                         int ny = cur.second + dy[dir];
 
                         if (nx < 0 || nx >= N || ny < 0 || ny >= N) continue;
-                        if (dist[nx][ny] == 0) continue;
+                        if (vis[nx][ny]) continue;
 
-                        dist[nx][ny] = 0;
+                        vis[nx][ny] = true;
                         Q.push({nx, ny});
                     }
                 }

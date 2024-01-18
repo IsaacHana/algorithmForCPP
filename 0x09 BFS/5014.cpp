@@ -1,6 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+const int MX = 1'000'000;
+int dist[MX + 1];
+
 int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
@@ -8,28 +11,27 @@ int main() {
     int F, S, G, U, D;
     cin >> F >> S >> G >> U >> D;
 
-    int board[F + 1];
-    fill(board, board + F + 1, -1);
+    fill(dist, dist + MX + 1, -1);
 
     queue<int> Q;
     Q.push(S);
-    board[S] = 0;
+    dist[S] = 0;
 
     while (!Q.empty()) {
         auto cur = Q.front();
         Q.pop();
 
-        for (auto ny : {cur + U, cur - D}) {
-            if (ny < 1 || ny > F) continue;
-            if (board[ny] != -1) continue;
+        for (int nxt : {cur + U, cur - D}) {
+            if (nxt < 1 || nxt > F) continue;
+            if (dist[nxt] != -1) continue;
 
-            board[ny] = board[cur] + 1;
-            Q.push(ny);
+            dist[nxt] = dist[cur] + 1;
+            Q.push(nxt);
         }
     }
 
-    if (board[G] == -1)
+    if (dist[G] == -1)
         cout << "use the stairs";
     else
-        cout << board[G];
+        cout << dist[G];
 }

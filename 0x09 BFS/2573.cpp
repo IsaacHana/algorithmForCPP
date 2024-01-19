@@ -1,85 +1,106 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int board[301][301];
+int N, M;
+int dist[301][301];
 bool vis[301][301];
 
 int dx[4] = {1, 0, -1, 0};
 int dy[4] = {0, 1, 0, -1};
-int main() {
-    ios::sync_with_stdio(0);
-    cin.tie(0);
 
-    int N, M;
-    cin >> N >> M;
-    int total = 0;
+bool splits() {
+    int area_cnt = 0;
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < M; j++) {
-            cin >> board[i][j];
-            if (board[i][j]) {
-                total++;
+            if (dist[i][j] <= 0 || vis[i][j]) continue;
+            area_cnt++;
+            if (area_cnt > 1) return true;
+
+            queue<pair<int, int>> Q;
+            Q.push({i, j});
+            vis[i][j] = true;
+
+            while (!Q.empty()) {
+                auto cur = Q.front();
+                Q.pop();
+
+                for (int dir = 0; dir < 4; dir++) {
+                    int nx = cur.first + dx[dir];
+                    int ny = cur.second + dy[dir];
+
+                    if (nx < 0 || nx >= N || ny < 0 || ny >= M) continue;
+                    if (dist[nx][ny] <= 0) continue;
+                    if (vis[nx][ny]) continue;
+
+                    vis[nx][ny] = true;
+                    Q.push({nx, ny});
+                }
             }
         }
     }
 
-    int time = 0;
-    while (total > 0) {
-        int ice_chunk = 0;
-        // 찾아서 녹이기
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                if (board[i][j] < 1 || vis[i][j]) continue;
-                ice_chunk++;
-                if (ice_chunk > 1) {
-                    cout << time;
-                    return 0;
-                }
-                queue<pair<int, int>> Q;
-                queue<tuple<int, int, int>> Q2;
+    for (int i = 0; i < N; i++) {
+        fill(vis[i], vis[i] + M, false);
+    }
 
-                Q.push({i, j});
-                vis[i][j] = true;
+    return false;
+}
 
-                // 주변 바다 계산
-                while (!Q.empty()) {
-                    auto cur = Q.front();
-                    Q.pop();
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
 
-                    int cnt = 0;
-                    for (int dir = 0; dir < 4; dir++) {
-                        int nx = cur.first + dx[dir];
-                        int ny = cur.second + dy[dir];
-                        if (nx < 0 || nx >= N || ny < 0 || ny >= M) continue;
-                        if (vis[nx][ny]) continue;
-                        if (board[nx][ny] < 1) {
-                            cnt++;
-                            continue;
-                        }
-                        vis[nx][ny] = true;
-                        Q.push({nx, ny});
-                    }
-                    Q2.push({cur.first, cur.second, cnt});
-                }
-                // 빙산 녹이기
-                while (!Q2.empty()) {
-                    auto cur = Q2.front();
-                    Q2.pop();
+    cin >> N >> M;
 
-                    int x, y, cnt;
-                    tie(x, y, cnt) = cur;
+    queue<tuple<int, int, int>> Q;
+    queue<tuple<int, int, int>> Q2;
 
-                    board[x][y] -= cnt;
-                    if (board[x][y] < 1) total--;
-                }
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < M; j++) {
+            int val;
+            cin >> val;
+            dist[i][j] = val;
+            if (val) {
+                Q.push({i, j, val});
             }
         }
+    }
+    int ans = 0;
+    while (!Q.empty()) {
+        ++ans;
+        int qsize = Q.size();
+        for (int i = 0; i < qsize; i++) {
+            int x, y, cnt;
+            tie(x, y, cnt) = Q.front();
+            Q.pop();
 
-        // 방문 초기화
-        for (int i = 0; i < N; i++) {
-            fill(vis[i], vis[i] + M, false);
+            for (int dir = 0; dir < 4; dir++) {
+                int nx = x + dx[dir];
+                int ny = y + dy[dir];
+
+                if (nx < 0 || nx >= N || ny < 0 || ny >= M) continue;
+                if (dist[nx][ny] > 0) continue;
+
+                cnt--;
+            }
+
+            Q2.push({x, y, cnt});
         }
 
-        time++;
+        while (!Q2.empty()) {
+            int x, y, cnt;
+            tie(x, y, cnt) = Q2.front();
+            Q2.pop();
+
+            dist[x][y] = cnt;
+            if (cnt <= 0) continue;
+            Q.push({x, y, cnt});
+        }
+
+        if (splits()) {
+            cout << ans;
+            return 0;
+        }
     }
 
     cout << 0;

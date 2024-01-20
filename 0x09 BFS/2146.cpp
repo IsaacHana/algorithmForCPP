@@ -47,8 +47,8 @@ int main() {
                     Q.push({nx, ny});
                 }
             }
+            bool complete = false;
             while (!GQ.empty()) {
-                bool complete = false;
                 int qsize = GQ.size();
                 for (int i = 0; i < qsize; i++) {
                     auto cur = GQ.front();
@@ -57,15 +57,14 @@ int main() {
                     for (int dir = 0; dir < 4; dir++) {
                         int nx = cur.first + dx[dir];
                         int ny = cur.second + dy[dir];
-                        int exp = dist[cur.first][cur.second] + 1;
                         if (nx < 0 || nx >= N || ny < 0 || ny >= N) continue;
                         if (vis[nx][ny]) continue;
                         if (dist[nx][ny]) continue;
-                        if (board[nx][ny] == 1 || exp > ans) {
+                        if (board[nx][ny] == 1 || dist[cur.first][cur.second] + 1 > ans) {
                             complete = true;
                             ans = min(ans, dist[cur.first][cur.second]);
                         }
-                        dist[nx][ny] = exp;
+                        dist[nx][ny] = dist[cur.first][cur.second] + 1;
                         GQ.push({nx, ny});
                     }
                 }

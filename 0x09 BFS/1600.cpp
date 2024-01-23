@@ -1,75 +1,74 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const int INF = 987654321;
-int K, W, H;
+const int MX = 987654321;
 int board[201][201];
-int dist[201][201][32];
+int dist[31][201][201];
+
 int dx[4] = {1, 0, -1, 0};
 int dy[4] = {0, 1, 0, -1};
 
-int horse_dx[8] = {2, 1, -1, -2, -2, -1, 1, 2};
-int horse_dy[8] = {1, 2, 2, 1, -1, -2, -2, -1};
-bool isVaild(int x, int y, int k) {
-    if (x < 1 || x > H || y < 1 || y > W) return false;
-    if (board[x][y] == 1) return false;
-    if (dist[x][y][k] != 0) return false;
-    return true;
-}
+int hx[8] = {2, 1, -1, -2, -2, -1, 1, 2};
+int hy[8] = {1, 2, 2, 1, -1, -2, -2, -1};
 
 int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
 
+    int K, W, H;
     cin >> K >> W >> H;
 
-    for (int i = 1; i <= H; i++) {
-        for (int j = 1; j <= W; j++) {
+    for (int i = 0; i < H; i++) {
+        for (int j = 0; j < W; j++) {
             cin >> board[i][j];
         }
     }
+
     queue<tuple<int, int, int>> Q;
-    Q.push({1, 1, K});
-    dist[1][1][K] = 1;
+    dist[K][0][0] = 1;
+    Q.push({K, 0, 0});
 
     while (!Q.empty()) {
-        auto cur = Q.front();
+        int k, x, y;
+        tie(k, x, y) = Q.front();
         Q.pop();
 
-        int x, y, k;
-        tie(x, y, k) = cur;
+        for (int dir = 0; dir < 4; dir++) {
+            int nx = x + dx[dir];
+            int ny = y + dy[dir];
 
-        if (x == H && y == W) {
-            dist[x][y][k];
-            return 0;
+            if (nx < 0 || nx >= H || ny < 0 || ny >= W) continue;
+            if (board[nx][ny]) continue;
+            if (dist[k][nx][ny]) continue;
+
+            dist[k][nx][ny] = dist[k][x][y] + 1;
+            Q.push({k, nx, ny});
         }
 
-        for (int i = 0; i < 4; i++) {
-            int nx = x + dx[i];
-            int ny = y + dy[i];
-            if (!isVaild(nx, ny, k)) continue;
-            dist[nx][ny][k] = dist[x][y][k] + 1;
-            Q.push({nx, ny, k});
-        }
-        if (k < 1) continue;
-        for (int i = 0; i < 8; i++) {
-            int nx = x + horse_dx[i];
-            int ny = y + horse_dy[i];
-            if (!isVaild(nx, ny, k - 1)) continue;
-            dist[nx][ny][k - 1] = dist[x][y][k] + 1;
-            Q.push({nx, ny, k - 1});
-        }
-    }
-    int ans = INF;
+        if (k <= 0) continue;
 
-    for (int k = 0; k <= K; k++) {
-        if (dist[H][W][k]) {
-            ans = min(ans, dist[H][W][k]);
+        for (int dir = 0; dir < 8; dir++) {
+            int nx = x + hx[dir];
+            int ny = y + hy[dir];
+
+            if (nx < 0 || nx >= H || ny < 0 || ny >= W) continue;
+            if (board[nx][ny]) continue;
+            if (dist[k - 1][nx][ny]) continue;
+
+            dist[k - 1][nx][ny] = dist[k][x][y] + 1;
+            Q.push({k - 1, nx, ny});
         }
     }
 
-    if (ans == INF)
+    int ans = MX;
+
+    for (int i = 0; i <= 30; i++) {
+        if (dist[i][H - 1][W - 1]) ans = min(ans, dist[i][H - 1][W - 1]);
+    }
+
+    if (ans == MX) {
         cout << -1;
-    else
+    } else {
         cout << ans - 1;
+    }
 }

@@ -2,11 +2,12 @@
 using namespace std;
 
 int board[1001][1001];
-int S[11];
-int cnt[11];
+int S[10];
+int cnt[10];
+queue<pair<int, int>> adj[10];
+
 int dx[4] = {1, 0, -1, 0};
 int dy[4] = {0, 1, 0, -1};
-
 int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
@@ -17,57 +18,58 @@ int main() {
     for (int i = 1; i <= P; i++) {
         cin >> S[i];
     }
-    queue<tuple<int, int, int>> Q[10];
 
+    char c;
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < M; j++) {
-            char val;
-            cin >> val;
-
-            if (val == '.')
+            cin >> c;
+            if (c == '#')
+                board[i][j] = -1;
+            else if (c == '.')
                 board[i][j] = 0;
-            else if (val == '#')
-                board[i][j] = 1;
             else {
-                board[i][j] = 1;
-                Q[val - '0'].push({i, j, 0});
-                cnt[val - '0']++;
+                int val = c - '0';
+                board[i][j] = val;
+                adj[val].push({i, j});
+                cnt[val]++;
             }
         }
     }
 
     while (true) {
-        bool isExtend = false;
-
+        bool escape = true;
         for (int i = 1; i <= P; i++) {
-            queue<tuple<int, int, int>> NQ;
-            while (!Q[i].empty()) {
-                int x, y, s;
-                tie(x, y, s) = Q[i].front();
-                Q[i].pop();
+            for (int j = 0; j < S[i]; j++) {
+                int qsize = adj[i].size();
+                if (qsize <= 0) break;
 
-                if (s >= S[i]) {
-                    NQ.push({x, y, 0});
-                    continue;
-                }
+                for (int k = 0; k < qsize; k++) {
+                    int x, y;
+                    tie(x, y) = adj[i].front();
+                    adj[i].pop();
 
-                for (int dir = 0; dir < 4; dir++) {
-                    int nx = x + dx[dir];
-                    int ny = y + dy[dir];
+                    for (int dir = 0; dir < 4; dir++) {
+                        int nx = x + dx[dir];
+                        int ny = y + dy[dir];
 
-                    if (nx < 0 || nx >= N || ny < 0 || ny >= M) continue;
-                    if (board[nx][ny]) continue;
-                    board[nx][ny] = 1;
-                    Q[i].push({nx, ny, s + 1});
-                    cnt[i]++;
-                    isExtend = true;
+                        if (nx < 0 || nx >= N || ny < 0 || ny >= M) continue;
+                        if (board[nx][ny]) continue;
+                        escape = false;
+                        cnt[i]++;
+                        board[nx][ny] = i;
+                        adj[i].push({nx, ny});
+                    }
                 }
             }
-            Q[i] = NQ;
         }
-        if (!isExtend) break;
+        if (escape) break;
     }
-
+    // for (int i = 0; i < N; i++) {
+    //     for (int j = 0; j < M; j++) {
+    //         cout << board[i][j] << " ";
+    //     }
+    //     cout << "\n";
+    // }
     for (int i = 1; i <= P; i++) {
         cout << cnt[i] << " ";
     }

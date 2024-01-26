@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MX = 500000;
+const int MX = 500'000;
 int dist[2][MX + 1];
 
 int main() {
@@ -13,48 +13,40 @@ int main() {
     for (int i = 0; i < 2; i++) fill(dist[i], dist[i] + MX + 1, -1);
 
     queue<pair<int, int>> NQ;
-    queue<pair<int, int>> KQ;
-
-    NQ.push({N, 0});
+    NQ.push({0, N});
     dist[0][N] = 0;
 
     while (!NQ.empty()) {
-        int x, time;
-        tie(x, time) = NQ.front();
+        int curTime, curPos;
+        tie(curTime, curPos) = NQ.front();
         NQ.pop();
-        int nxt_time = time + 1;
+        int nxtTime = curTime + 1;
+        for (int nxtPos : {curPos - 1, curPos + 1, curPos * 2}) {
+            if (nxtPos < 0 || nxtPos > MX) continue;
+            if (dist[nxtTime % 2][nxtPos] != -1) continue;
 
-        for (auto nxt : {x + 1, x - 1, x * 2}) {
-            if (nxt < 0 || nxt > MX) continue;
-            if (dist[nxt_time % 2][nxt] != -1) continue;
-            dist[nxt_time % 2][nxt] = nxt_time;
-            NQ.push({nxt, nxt_time});
+            dist[nxtTime % 2][nxtPos] = nxtTime;
+            NQ.push({nxtTime, nxtPos});
         }
     }
-    // for (int i = 0; i < 2; i++) {
-    //     for (int j = 0; j < 30; j++) {
-    //         cout << dist[i][j] << " ";
-    //     }
-    //     cout << '\n';
-    // }
-    KQ.push({K, 0});
+
+    queue<pair<int, int>> KQ;
+    KQ.push({0, K});
     while (!KQ.empty()) {
-        int x, time;
-        tie(x, time) = KQ.front();
+        int curTime, curPos;
+        tie(curTime, curPos) = KQ.front();
         KQ.pop();
 
-        if (dist[time % 2][x] <= time) {
-            cout << time << '\n';
+        if (dist[curTime % 2][curPos] <= curTime) {
+            cout << curTime;
             return 0;
         }
 
-        int nxt_time = time + 1;
-        int exp = x + nxt_time;
-        // cout << x << " " << exp << " " << dist[time % 2][x + time] << " " << nxt_time << '\n';
-        if (exp > MX) continue;
-
-        KQ.push({exp, nxt_time});
+        int nxtTime = curTime + 1;
+        int nxtPos = curPos + nxtTime;
+        if (nxtPos > MX) continue;
+        KQ.push({nxtTime, nxtPos});
     }
 
-    cout << -1 << "\n";
+    cout << -1;
 }

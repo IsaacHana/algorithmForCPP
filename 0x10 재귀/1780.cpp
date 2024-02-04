@@ -1,10 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MX = 2187;
-int cnt[3];
-int board[MX + 1][MX + 1];
-
+const int MX = 2200;
+int board[MX][MX];
+int cntArr[3];
 bool valid(int N, int x, int y) {
     for (int i = x; i < x + N; i++) {
         for (int j = y; j < y + N; j++) {
@@ -15,13 +14,13 @@ bool valid(int N, int x, int y) {
 }
 
 void recursion(int N, int x, int y) {
+    // base case
     if (valid(N, x, y)) {
-        cnt[board[x][y] + 1]++;
+        cntArr[board[x][y] + 1] += 1;
         return;
     }
 
     int n = N / 3;
-
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
             recursion(n, x + i * n, y + j * n);
@@ -35,20 +34,15 @@ int main() {
 
     int N;
     cin >> N;
-
-    // init
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
             cin >> board[i][j];
         }
     }
 
-    // cout << valid(3, 0, 0) << '\n';      // 1
-    // cout << valid(3, 3 * 2, 0) << '\n';  // 0
-
     recursion(N, 0, 0);
 
-    for (auto val : cnt) {
-        cout << val << '\n';
+    for (int cnt : cntArr) {
+        cout << cnt << '\n';
     }
 }

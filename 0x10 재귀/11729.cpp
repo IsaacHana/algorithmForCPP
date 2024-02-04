@@ -1,23 +1,23 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-void recursion(int a, int b, int n) {
-    if (n == 1) {
-        cout << a << ' ' << b << '\n';
+void recursion(int K, int start, int target) {
+    // base case
+    if (K == 1) {
+        cout << start << ' ' << target << '\n';
         return;
     }
-    recursion(a, 6 - a - b, n - 1);
-    cout << a << ' ' << b << '\n';
-    recursion(6 - a - b, b, n - 1);
+    int tmp = 6 - start - target;
+    recursion(K - 1, start, tmp);
+    cout << start << ' ' << target << '\n';
+    recursion(K - 1, tmp, target);
 }
 
 int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
-
-    int n;
-    cin >> n;
-
-    cout << (1 << n) - 1 << '\n';
-    recursion(1, 3, n);
+    int K;
+    cin >> K;
+    cout << (1 << K) - 1 << '\n';
+    recursion(K, 1, 3);
 }

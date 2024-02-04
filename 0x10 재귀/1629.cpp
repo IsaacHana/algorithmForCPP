@@ -1,18 +1,20 @@
 #include <bits/stdc++.h>
 using namespace std;
+using ll = long long;
 
-long long POW(long long A, long long B, long long C) {
-    if (B == 1) return A % C;
-    long long tmp = POW(A, B / 2, C);
-    tmp = tmp * tmp % C;
-    if (B % 2 == 0) return tmp;
-    return tmp * A % C;
+ll recursion(ll a, ll b, ll m) {
+    if (b == 1) return a % m;
+    ll val = recursion(a, b / 2, m);
+    val = val * val % m;
+    if (b % 2 == 0) return val;
+    return val * a % m;
 }
 
 int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
-    long long A, B, C;
+
+    ll A, B, C;
     cin >> A >> B >> C;
-    cout << POW(A, B, C);
+    cout << recursion(A, B, C);
 }

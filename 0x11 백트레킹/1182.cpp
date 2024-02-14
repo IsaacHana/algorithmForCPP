@@ -1,31 +1,28 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int arr[20];
-
 int N, S;
+int num[20];
 int cnt = 0;
-
-void sum_permutaion(int depth, int total) {
-    if (N == depth) {
-        if (S == total) cnt += 1;
+void dfs(int depth, int total) {
+    // base
+    if (depth == N) {
+        if (total == S) cnt++;
         return;
     }
 
-    sum_permutaion(depth + 1, total);
-    sum_permutaion(depth + 1, total + arr[depth]);
+    dfs(depth + 1, total);  // ¼±ÅÃ X
+    dfs(depth + 1, total + num[depth]);
 }
+
 int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
-
     cin >> N >> S;
-
     for (int i = 0; i < N; i++) {
-        cin >> arr[i];
+        cin >> num[i];
     }
-
-    sum_permutaion(0, 0);
+    dfs(0, 0);
     if (S == 0) cnt--;
     cout << cnt;
 }

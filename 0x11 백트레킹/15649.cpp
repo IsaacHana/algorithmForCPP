@@ -2,23 +2,26 @@
 using namespace std;
 
 int N, M;
-int arr[9];
-bool vis[9];
+int arr[10];
+bool vis[10];
 
-void backTracking(int depth) {
+void dfs(int depth) {
+    // base
     if (depth == M) {
-        for (int i = 0; i < M; i++) cout << arr[i] << ' ';
+        for (int i = 0; i < M; i++) {
+            cout << arr[i] << ' ';
+        }
         cout << '\n';
         return;
     }
-    for (int i = 1; i <= N; i++) {
-        if (!vis[i]) {
-            arr[depth] = i;
 
-            vis[i] = true;
-            backTracking(depth + 1);
-            vis[i] = false;
-        }
+    for (int i = 1; i <= N; i++) {
+        if (vis[i]) continue;
+
+        arr[depth] = i;
+        vis[i] = true;
+        dfs(depth + 1);
+        vis[i] = false;
     }
 }
 
@@ -27,6 +30,5 @@ int main() {
     cin.tie(0);
 
     cin >> N >> M;
-
-    backTracking(0);
+    dfs(0);
 }

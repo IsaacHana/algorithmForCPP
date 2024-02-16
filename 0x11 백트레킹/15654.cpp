@@ -3,26 +3,25 @@ using namespace std;
 
 int N, M;
 
-int board[9];
-int arr[9];
-int vis[9];
+int num[10];
+int arr[10];
+bool vis[10];
 
-void backTracking(int depth) {
-    // base case
+void dfs(int depth) {
     if (depth == M) {
         for (int i = 0; i < M; i++) {
             cout << arr[i] << ' ';
         }
         cout << '\n';
+        return;
     }
 
     for (int i = 0; i < N; i++) {
-        if (!vis[i]) {
-            arr[depth] = board[i];
-            vis[i] = true;
-            backTracking(depth + 1);
-            vis[i] = false;
-        }
+        if (vis[i]) continue;
+        arr[depth] = num[i];
+        vis[i] = true;
+        dfs(depth + 1);
+        vis[i] = false;
     }
 }
 
@@ -31,8 +30,9 @@ int main() {
     cin.tie(0);
     cin >> N >> M;
     for (int i = 0; i < N; i++) {
-        cin >> board[i];
+        cin >> num[i];
     }
-    sort(board, board + N);
-    backTracking(0);
+
+    sort(num, num + N);
+    dfs(0);
 }

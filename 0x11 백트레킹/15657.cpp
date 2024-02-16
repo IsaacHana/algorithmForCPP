@@ -3,24 +3,21 @@ using namespace std;
 
 int N, M;
 
-int board[9];
-int arr[9];
+int num[10];
+int arr[10];
 
-void backTracking(int depth) {
-    // base case
+void dfs(int depth, int start) {
     if (depth == M) {
         for (int i = 0; i < M; i++) {
-            cout << board[arr[i]] << ' ';
+            cout << arr[i] << ' ';
         }
         cout << '\n';
         return;
     }
 
-    int start = 0;
-    if (depth != 0) start = arr[depth - 1];
     for (int i = start; i < N; i++) {
-        arr[depth] = i;
-        backTracking(depth + 1);
+        arr[depth] = num[i];
+        dfs(depth + 1, i);
     }
 }
 
@@ -30,11 +27,7 @@ int main() {
 
     cin >> N >> M;
 
-    for (int i = 0; i < N; i++) {
-        cin >> board[i];
-    }
-
-    sort(board, board + N);
-
-    backTracking(0);
+    for (int i = 0; i < N; i++) cin >> num[i];
+    sort(num, num + N);
+    dfs(0, 0);
 }

@@ -3,34 +3,32 @@ using namespace std;
 
 int N, M;
 
-int numbers[9];
-int arr[9];
+int num[10];
+int arr[10];
 
-void backTracking(int depth, int start) {
-    // base case
+void dfs(int depth, int start) {
     if (depth == M) {
-        for (int i = 0; i < M; i++) cout << numbers[arr[i]] << ' ';
+        for (int i = 0; i < M; i++) cout << arr[i] << ' ';
         cout << '\n';
         return;
     }
 
-    int lastIndex = -1;
+    int tmp = 0;
     for (int i = start; i < N; i++) {
-        if (numbers[lastIndex] == numbers[i]) continue;
-        arr[depth] = i;
-        lastIndex = arr[depth];
-        backTracking(depth + 1, i);
+        if (tmp == num[i]) continue;
+        arr[depth] = num[i];
+        tmp = arr[depth];
+        dfs(depth + 1, i);
     }
 }
 
 int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
-
     cin >> N >> M;
     for (int i = 0; i < N; i++) {
-        cin >> numbers[i];
+        cin >> num[i];
     }
-    sort(numbers, numbers + N);
-    backTracking(0, 0);
+    sort(num, num + N);
+    dfs(0, 0);
 }

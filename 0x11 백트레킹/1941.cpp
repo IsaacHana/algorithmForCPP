@@ -1,82 +1,96 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <queue>
+#include <tuple>
 using namespace std;
 
-string board[5];
-bool mask[25];
-int ans = 0;
+const int W = 5;
+const int H = 5;
+const int M = 7;
+const int MX = H * W;
+
+string board[W];
+bool mask[MX];
+
 int dx[4] = {1, 0, -1, 0};
 int dy[4] = {0, 1, 0, -1};
 
-void bfs() {
-    queue<pair<int, int>> Q;
-    int adj_cnt = 0;
+int ans = 0;
+
+bool bfs() {
     int s_cnt = 0;
-    bool vis[5][5] = {};
 
-    for (int i = 0; i < 25; i++) {
+    queue<pair<int, int>> q;
+    bool vis[H][W] = {};
+    int end_x;
+    int end_y;
+    for (int i = 0; i < MX; i++) {
         if (mask[i]) {
-            int x = i / 5;
-            int y = i % 5;
+            int x = i / W;
+            int y = i % W;
 
-            Q.push({x, y});
+            end_x = x;
+            end_y = y;
             vis[x][y] = true;
-            break;
+
+            if (board[x][y] == 'S') s_cnt++;
         }
     }
 
-    while (!Q.empty()) {
-        int x, y;
-        tie(x, y) = Q.front();
-        Q.pop();
+    if (s_cnt < 4) return false;
 
+    int adj_cnt = 0;
+    bool vis1[H][W] = {};
+
+    q.push({end_x, end_y});
+    vis1[end_x][end_y] = true;
+
+    while (!q.empty()) {
+        int x, y;
+        tie(x, y) = q.front();
+        q.pop();
         adj_cnt++;
-        if (board[x][y] == 'S') s_cnt++;
 
         for (int dir = 0; dir < 4; dir++) {
             int nx = x + dx[dir];
             int ny = y + dy[dir];
 
-            if (nx < 0 || nx >= 5 || ny < 0 || ny >= 5) continue;
-            if (!mask[nx * 5 + ny]) continue;
-            if (vis[nx][ny]) continue;
+            if (nx < 0 || nx >= H || ny < 0 || ny >= W) continue;
+            if (!vis[nx][ny]) continue;
+            if (vis1[nx][ny]) continue;
 
-            vis[nx][ny] = true;
-            Q.push({nx, ny});
+            vis1[nx][ny] = true;
+            q.push({nx, ny});
         }
     }
 
-    if (adj_cnt == 7 && s_cnt >= 4) {
-        ans++;
-    }
+    if (adj_cnt != M) return false;
+
+    return true;
 }
-void backTracking(int depth, int start) {
-    // basc case
-    if (depth == 7) {
-        bfs();
+
+void dfs(int depth, int start) {
+    if (depth == M) {
+        if (bfs()) {
+            ans++;
+        }
         return;
     }
 
-    for (int i = start; i < 25; i++) {
+    for (int i = start; i < MX; i++) {
         if (mask[i]) continue;
         mask[i] = true;
-        backTracking(depth + 1, i + 1);
+        dfs(depth + 1, i + 1);
         mask[i] = false;
     }
 }
+
 int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
 
-    for (int i = 0; i < 5; i++) cin >> board[i];
-    // mask[5] = true;
-    // mask[6] = true;
-    // mask[7] = true;
-    // mask[8] = true;
-    // mask[9] = true;
-    // mask[14] = true;
-    // mask[19] = true;
-    // bfs();
-    backTracking(0, 0);
-
-    cout << ans;
+    for (int i = 0; i < H; i++) {
+        cin >> board[i];
+    }
+    dfs(0, 0);
+    cout << ans << '\n';
 }

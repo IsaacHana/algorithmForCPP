@@ -2,34 +2,34 @@
 using namespace std;
 
 int N;
-int S[9], W[9];
-bool vis[9];
+pair<int, int> egg[10];
+int arr[10];
 int ans = 0;
 int cnt = 0;
-
-void backTracking(int depth) {
-    // base case
+void dfs(int depth) {
     if (depth == N) {
         ans = max(ans, cnt);
         return;
     }
 
-    if (S[depth] <= 0 || cnt == N - 1) {
-        backTracking(depth + 1);
+    if (egg[depth].first <= 0 || cnt == N - 1) {
+        dfs(depth + 1);
         return;
     }
 
     for (int i = 0; i < N; i++) {
-        if (i == depth || S[i] <= 0) continue;
-        S[depth] -= W[i];
-        S[i] -= W[depth];
-        if (S[depth] <= 0) cnt++;
-        if (S[i] <= 0) cnt++;
-        backTracking(depth + 1);
-        if (S[depth] <= 0) cnt--;
-        if (S[i] <= 0) cnt--;
-        S[depth] += W[i];
-        S[i] += W[depth];
+        if (depth == i) continue;
+        if (egg[i].first <= 0) continue;
+
+        egg[depth].first -= egg[i].second;
+        egg[i].first -= egg[depth].second;
+        if (egg[depth].first <= 0) cnt++;
+        if (egg[i].first <= 0) cnt++;
+        dfs(depth + 1);
+        if (egg[depth].first <= 0) cnt--;
+        if (egg[i].first <= 0) cnt--;
+        egg[depth].first += egg[i].second;
+        egg[i].first += egg[depth].second;
     }
 }
 
@@ -38,11 +38,13 @@ int main() {
     cin.tie(0);
 
     cin >> N;
+    int S, W;
     for (int i = 0; i < N; i++) {
-        cin >> S[i] >> W[i];
+        cin >> S >> W;
+        egg[i] = {S, W};
     }
 
-    backTracking(0);
+    dfs(0);
 
-    cout << ans;
+    cout << ans << '\n';
 }

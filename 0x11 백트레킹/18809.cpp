@@ -1,98 +1,112 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+const int LAKE = 0;
+const int GROUND = 1;
+const int POSSIBLE = 2;
+
+const int EMPTY = 0;
 const int GREEN = 1;
 const int RED = 2;
 const int FLOWER = 3;
 
-int N, M, G, R, GR;
+int N, M, G, R;
 int board[52][52];
 vector<pair<int, int>> v;
-int total;
-int green_red[10];
+int v_size;
+int brute[10];
 int arr[10];
-bool vis[10];
+int vis[10];
 int ans = 0;
 
 int dx[4] = {1, 0, -1, 0};
 int dy[4] = {0, 1, 0, -1};
 
 int bfs() {
-    int cnt = 0;
-    pair<int, int> state[52][52];  // 거리, 색깔
-
-    queue<pair<int, int>> Q;
-    for (int i = 0; i < total; i++) {
-        if (arr[i] == GREEN || arr[i] == RED) {
+    queue<pair<int, int>> q;
+    pair<int, int> state[52][52];  // 거리, 종류
+    for (int i = 0; i < v_size; i++) {
+        if (arr[i] != EMPTY) {
             state[v[i].first][v[i].second] = {0, arr[i]};
-            Q.push(v[i]);
+            q.push(v[i]);
         }
     }
 
-    while (!Q.empty()) {
+    // for (int i = 0; i <= N + 1; i++) {
+    //     for (int j = 0; j <= M + 1; j++) {
+    //         cout << state[i][j].second << ' ';
+    //     }
+    //     cout << '\n';
+    // }
+    // cout << '\n';
+
+    int cnt = 0;
+    while (!q.empty()) {
         int x, y;
-        tie(x, y) = Q.front();
-        Q.pop();
+        tie(x, y) = q.front();
+        q.pop();
 
-        int cur_time = state[x][y].first;
-        int cur_color = state[x][y].second;
-
-        if (cur_color == FLOWER) continue;
-
+        int cur_dis = state[x][y].first;
+        int cur_tpye = state[x][y].second;
+        if (cur_tpye == FLOWER) continue;
         for (int dir = 0; dir < 4; dir++) {
             int nx = x + dx[dir];
             int ny = y + dy[dir];
-            if (nx < 0 || nx >= N || ny < 0 || ny >= M) continue;
-            if (board[nx][ny] == 0) continue;  // 호수
 
-            int nxt_time = state[nx][ny].first;
-            int nxt_color = state[nx][ny].second;
-            // 배양액이 없는 땅일 때
-            if (nxt_color == 0) {
-                state[nx][ny] = {cur_time + 1, cur_color};
-                Q.push({nx, ny});
-            }
-            // 초록 배양액
-            else if (nxt_color == GREEN) {
-                if (cur_color == RED && nxt_time == cur_time + 1) {  // 빨간색 배양액과 동시에 접근한다면
-                    cnt++;                                           // 꽃의 갯수 증가
-                    state[nx][ny].second = FLOWER;                   // 꽃이 핀 상태
-                }
-            }
-            // 빨간
-            else if (nxt_color == RED) {
-                if (cur_color == GREEN && nxt_time == cur_time + 1) {
-                    cnt++;
+            if (board[nx][ny] == LAKE) continue;  // 호수 일 경우
+
+            int nxt_dis = state[nx][ny].first;
+            int nxt_type = state[nx][ny].second;
+
+            if (nxt_type == EMPTY) {
+                state[nx][ny] = {cur_dis + 1, cur_tpye};
+                q.push({nx, ny});
+            } else if (nxt_type == RED) {
+                if (cur_tpye == GREEN && nxt_dis == cur_dis + 1) {
                     state[nx][ny].second = FLOWER;
+                    cnt++;
+                }
+            } else if (nxt_type == GREEN) {
+                if (cur_tpye == RED && nxt_dis == cur_dis + 1) {
+                    state[nx][ny].second = FLOWER;
+                    cnt++;
                 }
             }
         }
     }
+
+    // for (int i = 0; i <= N + 1; i++) {
+    //     for (int j = 0; j <= M + 1; j++) {
+    //         cout << state[i][j].second << ' ';
+    //     }
+    //     cout << '\n';
+    // }
+    // cout << '\n';
 
     return cnt;
 }
 
-void backTracking(int depth) {
-    // base case
-    if (depth == total) {
-        // for (int i = 0; i < total; i++) {
+void dfs(int depth) {
+    if (depth == v_size) {
+        // for (int i = 0; i < v_size; i++) {
         //     cout << arr[i] << ' ';
         // }
-        // cout << '\n';
+        // cout << "\n";
+
         ans = max(ans, bfs());
         return;
     }
 
-    // N과 M (9) 15663
     int tmp = -1;
-    for (int i = 0; i < total; i++) {
-        if (tmp == green_red[i]) continue;
+    for (int i = 0; i < v_size; i++) {
+        if (tmp == brute[i]) continue;
         if (vis[i]) continue;
 
-        arr[depth] = green_red[i];
+        arr[depth] = brute[i];
         tmp = arr[depth];
+
         vis[i] = true;
-        backTracking(depth + 1);
+        dfs(depth + 1);
         vis[i] = false;
     }
 }
@@ -100,29 +114,36 @@ void backTracking(int depth) {
 int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
-
     cin >> N >> M >> G >> R;
 
-    GR = G + R;
-
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < M; j++) {
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j <= M; j++) {
             cin >> board[i][j];
-            if (board[i][j] == 2) v.push_back({i, j});
+            if (board[i][j] == POSSIBLE) v.push_back({i, j});
         }
     }
 
-    total = v.size();
+    v_size = v.size();
 
-    fill(green_red + total - G - R, green_red + total - R, GREEN);
-    fill(green_red + total - R, green_red + total, RED);
-
-    // cout << "========\n";
-    // for (int i = 0; i < total; i++) {
-    //     cout << green_red[i] << ' ';
+    // for (int i = 0; i <= N + 1; i++) {
+    //     for (int j = 0; j <= M + 1; j++) {
+    //         cout << board[i][j] << ' ';
+    //     }
+    //     cout << '\n';
     // }
-    // cout << "\n========\n";
-    backTracking(0);
+
+    // cout << v_size << '\n';
+
+    fill(brute + v_size - G - R, brute + v_size - R, GREEN);
+    fill(brute + v_size - R, brute + v_size, RED);
+
+    // cout << "brute" << '\n';
+    // for (int i = 0; i < v_size; i++) {
+    //     cout << brute[i] << ' ';
+    // }
+    // cout << "\n=======\n";
+
+    dfs(0);
 
     cout << ans << '\n';
 }

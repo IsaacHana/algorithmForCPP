@@ -1,36 +1,50 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+struct Egg {
+    int dur;
+    int wei;
+
+    Egg(int d, int w) : dur(d), wei(w){};
+};
+
 int N;
-pair<int, int> egg[10];
-int arr[10];
+vector<Egg> egg;
 int ans = 0;
-int cnt = 0;
-void dfs(int depth) {
+
+bool vis[10];
+
+void dfs(int depth, int cnt) {
+    if (ans >= cnt + 2 * (N - depth)) {
+        return;
+    }
+
     if (depth == N) {
         ans = max(ans, cnt);
         return;
     }
 
-    if (egg[depth].first <= 0 || cnt == N - 1) {
-        dfs(depth + 1);
+    if (egg[depth].dur <= 0) {
+        dfs(depth + 1, cnt);
         return;
     }
 
+    bool crush = false;
+
     for (int i = 0; i < N; i++) {
         if (depth == i) continue;
-        if (egg[i].first <= 0) continue;
+        if (egg[i].dur <= 0) continue;
 
-        egg[depth].first -= egg[i].second;
-        egg[i].first -= egg[depth].second;
-        if (egg[depth].first <= 0) cnt++;
-        if (egg[i].first <= 0) cnt++;
-        dfs(depth + 1);
-        if (egg[depth].first <= 0) cnt--;
-        if (egg[i].first <= 0) cnt--;
-        egg[depth].first += egg[i].second;
-        egg[i].first += egg[depth].second;
+        crush = true;
+
+        egg[depth].dur -= egg[i].wei;
+        egg[i].dur -= egg[depth].wei;
+        dfs(depth + 1, cnt + (egg[depth].dur <= 0) + (egg[i].dur <= 0));
+        egg[depth].dur += egg[i].wei;
+        egg[i].dur += egg[depth].wei;
     }
+
+    if (crush == false) dfs(depth + 1, cnt);
 }
 
 int main() {
@@ -38,13 +52,14 @@ int main() {
     cin.tie(0);
 
     cin >> N;
-    int S, W;
+    int dur, wei;
     for (int i = 0; i < N; i++) {
-        cin >> S >> W;
-        egg[i] = {S, W};
+        cin >> dur >> wei;
+        Egg cur_egg(dur, wei);
+        egg.push_back(cur_egg);
     }
 
-    dfs(0);
+    dfs(0, 0);  // depth, count
 
     cout << ans << '\n';
 }

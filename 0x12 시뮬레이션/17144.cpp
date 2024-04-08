@@ -11,23 +11,44 @@ int dy[4] = {1, 0, -1, 0};
 
 int cdx[4] = {0, 1, 0, -1};
 
-void spread(int i, int j) {
-    if (board[i][j] == 0) return;
+void print_board() {
+    cout << '\n';
+    for (int i = 0; i < R; i++) {
+        for (int j = 0; j < C; j++) {
+            cout << board[i][j] << ' ';
+        }
+        cout << '\n';
+    }
+}
 
-    int total = 0;
+void spread() {
+    int dummy1[52][52] = {};
+    int dummy2[52][52] = {};
 
-    for (int dir = 0; dir < 4; dir++) {
-        int nx = i + dx[dir];
-        int ny = j + dy[dir];
+    for (int i = 0; i < R; i++) {
+        for (int j = 0; j < C; j++) {
+            if (board[i][j] <= 0) continue;
+            dummy2[i][j] = board[i][j];
 
-        if (nx < 0 || nx >= R || ny < 0 || ny > C) continue;
-        if (board[nx][ny] == -1) continue;
-        int amount = board[i][j] / 5;
-        board[nx][ny] += amount;
-        total += amount;
+            for (int dir = 0; dir < 4; dir++) {
+                int nx = i + dx[dir];
+                int ny = j + dy[dir];
+
+                if (nx < 0 || nx >= R || ny < 0 || ny >= C) continue;
+                if (board[nx][ny] == -1) continue;
+                int amount = board[i][j] / 5;
+                dummy1[nx][ny] += amount;
+                dummy2[i][j] -= amount;
+            }
+        }
     }
 
-    board[i][j] -= total;
+    for (int i = 0; i < R; i++) {
+        for (int j = 0; j < C; j++) {
+            if (board[i][j] == -1) continue;
+            board[i][j] = dummy1[i][j] + dummy2[i][j];
+        }
+    }
 }
 
 void counter_clock(int i, int j, int dir, int prev) {
@@ -68,9 +89,9 @@ void clock(int i, int j, int dir, int prev) {
         nx = i + cdx[dir];
         ny = j + dy[dir];
 
-        counter_clock(nx, ny, dir, tmp);
+        clock(nx, ny, dir, tmp);
     } else {
-        counter_clock(nx, ny, dir, tmp);
+        clock(nx, ny, dir, tmp);
     }
 }
 
@@ -100,29 +121,28 @@ int main() {
         }
     }
     // 1. 미세먼지 확산
-    for (int i = 0; i < R; i++) {
-        for (int j = 0; j < C; j++) {
-            if (board[i][j] == -1) continue;
-            spread(i, j);
-        }
-    }
+    // spread();
+    // print_board();
 
     // 2. 기계 작동
     // work();
+    // print_board();
 
-    cout << '\n';
+    while (T--) {
+        spread();
+        work();
+    }
+
+    // print_board();
+
+    int total = 0;
+
     for (int i = 0; i < R; i++) {
         for (int j = 0; j < C; j++) {
-            cout << board[i][j] << ' ';
+            if (board[i][j] <= 0) continue;
+            total += board[i][j];
         }
-        cout << '\n';
     }
-    work();
-    cout << '\n';
-    for (int i = 0; i < R; i++) {
-        for (int j = 0; j < C; j++) {
-            cout << board[i][j] << ' ';
-        }
-        cout << '\n';
-    }
+
+    cout << total << '\n';
 }

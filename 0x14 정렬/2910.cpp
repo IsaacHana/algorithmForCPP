@@ -16,7 +16,7 @@ int main() {
         cin >> x;
         bool flag = false;
         for (auto& v : vec) {
-            if (v.first == x) {
+            if (v.second == x) {
                 flag = true;
                 v.first++;
                 break;

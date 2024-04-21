@@ -11,11 +11,11 @@ int main() {
         int n;
         cin >> n;
 
-        int sticker[2][n] = {};
-        int dp[2][n] = {};
+        int sticker[2][n];
+        int dp[2][n];
 
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < 2; j++) {
+        for (int j = 0; j < 2; j++) {
+            for (int i = 0; i < n; i++) {
                 cin >> sticker[j][i];
             }
         }
@@ -24,7 +24,7 @@ int main() {
             for (int j = 0; j < 2; j++) {
                 int v = 0;
                 if (i > 1) v = max(dp[0][i - 2], dp[1][i - 2]);
-                if (i > 0) v = max(v, dp[1 - j][1 - j]);
+                if (i > 0) v = max(v, dp[1 - j][i - 1]);
                 dp[j][i] = v + sticker[j][i];
             }
         }

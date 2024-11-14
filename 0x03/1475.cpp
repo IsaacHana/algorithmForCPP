@@ -1,8 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int main()
-{
+int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
 
@@ -10,16 +9,13 @@ int main()
     int arr[10] = {};
     cin >> num;
 
-    while (num > 0)
-    {
+    while (num > 0) {
         arr[num % 10]++;
         num /= 10;
     }
 
-    for (int i = 0; i < 10; i++)
-    {
-        if (i == 6 || i == 9)
-            continue;
+    for (int i = 0; i < 10; i++) {
+        if (i == 6 || i == 9) continue;
         ans = max(ans, arr[i]);
     }
 

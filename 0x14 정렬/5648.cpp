@@ -12,12 +12,13 @@ int main() {
     while (n--) {
         cin >> val;
         reverse(val.begin(), val.end());
+
         vec.push_back(stoll(val));
     }
 
     sort(vec.begin(), vec.end());
 
-    for (int v : vec) {
+    for (long long v : vec) {
         cout << v << '\n';
     }
 }

@@ -27,9 +27,6 @@ int main() {
     for (int i = 1; i < vec.size(); i++) {
         ans *= dp[vec[i] - vec[i - 1] - 1];
     }
-    // for (auto v : vec) {
-    //     cout << v << ' ';
-    // }
-    cout << '\n';
+
     cout << ans << '\n';
 }

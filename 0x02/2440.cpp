@@ -14,5 +14,6 @@ int main()
         for (int j = N - i + 1; j > 0; j--)
             cout << "*";
         cout << '\n';
+        
     }
 }

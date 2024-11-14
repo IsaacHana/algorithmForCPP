@@ -26,7 +26,7 @@ int main() {
         }
 
         sort(vec.begin(), vec.end());
-
+    
         int cnt = 0;
         int ans = 0;
     
